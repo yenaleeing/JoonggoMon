@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="memberMapper">
+
+
+ <!--1.member 테이블에서 SQL작업(1.글목록보기)   -->  
+<select id="memberList" parameterType="map"  resultType="MemberVO">
+    select *
+     	 from (select a.*,rownum rnum
+     	   from (select * from member
+     	   	         <where>
+     	         	<if test='keyWord!=null'>
+     	         	      USER_ID like '%' || #{keyWord} || '%'
+     	         	</if>
+     	         </where>
+     	   order by user_id desc) a) 
+   <![CDATA[
+    where rnum >=#{start} AND rnum <=#{end}
+     ]]>
+</select>
+
+
+  <!-- 2.검색어에 해당하는 총레코드수 구하기(java.lang.Integer->Integer->int) -->
+ <select id="countMember" parameterType="map" resultType="Integer">
+    select count(*) from member
+    			 <where>
+     	         	<if test='keyWord!=null'>
+     	         	     user_id like '%' || #{keyWord} || '%'
+     	         	</if>
+     	         </where>
+ </select>
+ 
+
+
+
+<!--로그인시 비교 값 -->
+<select id="login" resultType="String">
+	SELECT USER_ID  FROM MEMBER WHERE (USER_ID = #{USER_ID})
+</select>
+
+<!--회원정보 하나 가져오기-->
+<select id = "getOneMember" resultType="MemberVO">
+SELECT * from MEMBER WHERE USER_ID = #{USER_ID}
+</select>
+
+<!--회원 정보 업데이트-->
+<select id="updateOneMember" resultType="int">
+UPDATE MEMBER SET BIRTHDATE = #{BIRTHDATE},PHONENUM=#{PHONENUM},ADDRESS=#{ADDRESS},U_PICTURE=#{U_PICTURE}, U_NAME = #{U_NAME},EMAIL=#{EMAIL} WHERE USER_ID = #{USER_ID}
+</select>
+
+<!--비밀번호 변경-->
+<update id="changepassword" parameterType="map">
+UPDATE MEMBER SET U_PWD = #{newPassword} WHERE USER_ID = #{user_id}
+</update>
+
+<!--로그인 테이블비밀번호 변경-->
+<update id="mchangepassword" parameterType="map">
+UPDATE LOGIN SET U_PWD = #{newPassword} WHERE USER_ID = #{user_id}
+</update>
+
+<!--비밀번호 복호화를 위해 비밀번호 호출-->
+<select id= "getPwd" resultType="String">
+	SELECT U_PWD FROM MEMBER WHERE (USER_ID = #{USER_ID})
+</select>
+
+<!--로그인을 위해 인증키 가져오기-->
+<select id="getAuthKey" resultType ="String">
+	SELECT AUTHKEY FROM LOGIN WHERE USER_ID = #{USER_ID} 
+</select>
+
+<!--회원 가입-->
+ <insert id="create">
+ insert into MEMBER (USER_ID,U_PWD,U_NAME,U_NICKNAME,EMAIL,BIRTHDATE,PHONENUM,ADDRESS,U_PICTURE,AUTHPATH) 
+ values(#{USER_ID},#{U_PWD},#{U_NAME}, #{U_NICKNAME},#{EMAIL},#{BIRTHDATE},#{PHONENUM},#{ADDRESS},#{U_PICTURE},#{AUTHPATH})
+ </insert>
+ 
+ <!--Login Table 에 등록-->
+ <insert id="regist">
+ insert into LOGIN (USER_ID,U_PWD,AUTHKEY) values(#{USER_ID},#{U_PWD},0)
+ </insert>
+ 
+ <!--이메일 인증 -->
+ <update id="verify" parameterType="map">
+UPDATE LOGIN  SET AUTHKEY  = 1 WHERE LOGIN.USER_ID IN (SELECT MEMBER.USER_ID  FROM MEMBER WHERE   LOGIN.USER_ID  = MEMBER.USER_ID AND MEMBER.EMAIL = #{memberEmail}  AND MEMBER.AUTHPATH  = #{key}) 
+
+ </update>
+ 
+ <!-- 로그인 패스워드 변경 -->
+ <update id="resetpassword" parameterType="map">
+UPDATE LOGIN  SET U_PWD  =#{resetPassword} WHERE LOGIN.USER_ID IN (SELECT MEMBER.USER_ID  FROM MEMBER WHERE   LOGIN.USER_ID  = MEMBER.USER_ID AND MEMBER.EMAIL = #{email} ) 
+
+ </update>
+ 
+ <!-- 멤버 패스워드 변경-->
+ <update id="mresetpassword" parameterType="map">
+ UPDATE MEMBER SET U_PWD = #{resetPassword} where EMAIL = #{email} 
+ </update>
+ 
+ <!-- 최대값 -->
+ <select id="getNewMember_ID" resultType="int">
+ 	select max(USER_ID) from MEMBER
+ </select>
+ 
+ <select id="idChk" resultType="int">
+ 		select COUNT(*) FROM MEMBER 
+ 		WHERE USER_ID = #{USER_ID}
+ </select>
+ 
+<select id="listAll">
+select * from MEMBER
+</select>
+
+<select id="emChk" resultType="int">
+        SELECT COUNT(*) FROM MEMBER
+        WHERE EMAIL = #{email}
+ </select>
+
+<!-- 회원탈퇴 -->
+<delete id="memberRemove" parameterType="MemberVO">
+	DELETE FROM MEMBER
+	WHERE USER_ID = #{user_id}
+</delete>
+
+ 
+  
+</mapper>

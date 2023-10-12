@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans:beans xmlns="http://www.springframework.org/schema/mvc"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:beans="http://www.springframework.org/schema/beans"
+	xmlns:context="http://www.springframework.org/schema/context"
+	   xmlns:p="http://www.springframework.org/schema/p"
+	xsi:schemaLocation="http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc.xsd
+		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
+		"
+
+		> 
+
+	<!-- DispatcherServlet Context: defines this servlet's request-processing infrastructure -->
+	
+	<!-- Enables the Spring MVC @Controller programming model -->
+	<annotation-driven />
+
+	<!-- Handles HTTP GET requests for /resources/** by efficiently serving up static resources in the ${webappRoot}/resources directory -->
+	<resources mapping="/resources/**" location="/resources/" />
+	
+		<!-- Handles HTTP GET requests for /resources/** by efficiently serving up static resources in the ${webappRoot}/resources directory -->
+	<resources mapping="/profilePic/**" location="/profilePic/" />
+	
+			<!-- Handles HTTP GET requests for /resources/** by efficiently serving up static resources in the ${webappRoot}/resources directory -->
+	<resources mapping="/noticeboardPic/**" location="/noticeboardPic/" />
+ 
+ 			<!-- Handles HTTP GET requests for /resources/** by efficiently serving up static resources in the ${webappRoot}/resources directory -->
+	<resources mapping="/normalboardPic/**" location="/normalboardPic/" />
+ 
+  			<!-- Handles HTTP GET requests for /resources/** by efficiently serving up static resources in the ${webappRoot}/resources directory -->
+	<resources mapping="/productImg/**" location="/productImg/" />
+	
+	
+	<!-- Resolves views selected for rendering by @Controllers to .jsp resources in the /WEB-INF/views directory -->
+	<beans:bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+		<beans:property name="prefix" value="/WEB-INF/views/" />
+		<beans:property name="suffix" value=".jsp" />
+	</beans:bean>
+	
+	
+ <!-- 파일업로드 관련 Mulitipart 설정 -->
+    <beans:bean id="multipartResolver"
+                class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
+        <!-- 
+        	setting maximum upload size
+            최대 크기 설정
+            <beans:property name="maxUploadSize" value="-1"/>
+        -->
+        <beans:property name="maxUploadSize" value="209715200"/> <!-- 20MB --> <!-- max size of file in memory (in bytes) -->
+        <beans:property name="maxInMemorySize" value="1048576"/> <!-- 1MB -->
+    </beans:bean>
+  
+  <!-- 회원가입 메일 인증 -->
+	<beans:bean id="mailSender"	class="org.springframework.mail.javamail.JavaMailSenderImpl">
+		<beans:property name="host" value="smtp.gmail.com" />
+		<beans:property name="port" value="587" /><!-- 465 or 25 -->
+		<beans:property name="username" value="joongomon@gmail.com" />
+		<beans:property name="password" value="jkcdwrdvbkuossge" />
+		<beans:property name="defaultEncoding" value="utf-8" />
+		<beans:property name="javaMailProperties">
+			<beans:props>
+				<beans:prop key="mail.transport.protocol">smtp</beans:prop>
+				<beans:prop key="mail.smtp.auth">true</beans:prop>
+				<beans:prop key="mail.smtp.starttls.enable">true</beans:prop>
+				<beans:prop key="mail.debug">true</beans:prop>
+				<beans:prop key="mail.smtp.ssl.protocols">TLSv1.2</beans:prop>		
+			</beans:props>
+		</beans:property>
+	</beans:bean>
+	
+	
+    <context:component-scan base-package="org.jgmon.admin.controller" />
+    <context:component-scan base-package="org.jgmon.admin.service" />
+	<context:component-scan base-package="org.jgmon.controller" />	
+    <context:component-scan base-package="org.jgmon.service" /> 
+
+	<beans:bean id = "AdminLoginInterceptor" class = "org.jgmon.admin.util.LoginInterceptor" />
+
+ 	<!-- 인터셉터 설정 및 호출할 클래스들 -->
+ 	<interceptors>
+		<interceptor>
+				<mapping path="/admin/*" />
+				<exclude-mapping path="/admin/login"/><!--제외하는 링크들 로그인과 로그인 체크는 세션이 필요없기때문에-->
+				<exclude-mapping path = "/admin/login_check.do" />
+				<beans:ref bean="AdminLoginInterceptor"/> <!-- 어떤 interceptor 설정할지 작성-->
+		</interceptor> 	
+ 	
+ 	</interceptors>
+ 	
+ 	<beans:bean id = "MemberLoginInterceptor" class = "org.jgmon.util.LoginInterceptor" />
+ 	 	<!-- 인터셉터 설정 및 호출할 클래스들 -->
+ 	<interceptors>
+      <interceptor>
+            <mapping path="/member/*" />
+            <exclude-mapping path="/member/login.do"/><!--제외하는 링크들 로그인과 로그인 체크는 세션이 필요없기때문에-->
+            <exclude-mapping path="/member/regist"/><!--제외하는 링크들 로그인과 로그인 체크는 세션이 필요없기때문에-->
+            <exclude-mapping path="/member/regist.do"/><!--제외하는 링크들 로그인과 로그인 체크는 세션이 필요없기때문에-->
+            <exclude-mapping path="/member/forgotpassword"/><!--제외하는 링크들 로그인과 로그인 체크는 세션이 필요없기때문에-->
+            <exclude-mapping path="/member/regist/idChk.do"/><!--제외하는 링크들 로그인과 로그인 체크는 세션이 필요없기때문에-->
+            <exclude-mapping path="/member/registerEmail"/><!--제외하는 링크들 로그인과 로그인 체크는 세션이 필요없기때문에-->
+            <exclude-mapping path="/member/resetpassword"/><!--제외하는 링크들 로그인과 로그인 체크는 세션이 필요없기때문에-->
+            <exclude-mapping path="/member/regist/emChk.do"/><!--제외하는 링크들 로그인과 로그인 체크는 세션이 필요없기때문에-->
+            <beans:ref bean="MemberLoginInterceptor"/> <!-- 어떤 interceptor 설정할지 작성-->
+      </interceptor>   
+    </interceptors>	
+</beans:beans>
+ 

@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="managerMapper">
+
+<select id="loginCheck" resultType="String">
+	SELECT M_NICKNAME  FROM MANAGER WHERE (MANAGER_ID  = #{manager_id} AND M_PWD = #{m_pwd})
+</select>
+   
+</mapper>

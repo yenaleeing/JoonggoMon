@@ -1,0 +1,40 @@
+{
+	"folders": {},
+	"connections": {
+		"oracle_thin-189e9d7b125-5bbd18d48e76533d": {
+			"provider": "oracle",
+			"driver": "oracle_thin",
+			"name": "localhost",
+			"save-password": true,
+			"configuration": {
+				"host": "localhost",
+				"port": "1521",
+				"database": "orcl",
+				"url": "jdbc:oracle:thin:@//localhost:1521/orcl",
+				"configurationType": "MANUAL",
+				"home": "C:\\Users\\gudrb\\AppData\\Local\\Temp\\OraDeinstall_22-42-01",
+				"type": "dev",
+				"provider-properties": {
+					"@dbeaver-connection-type@": "BASIC",
+					"@dbeaver-sid-service@": "SERVICE"
+				},
+				"auth-model": "oracle_native"
+			}
+		}
+	},
+	"virtual-models": {"oracle_thin-189e9d7b125-5bbd18d48e76533d":{"ADMINJOONGO":{"@properties":{"erd.diagram.state":{"serialized":"\u003cdiagram version\u003d\"1\" name\u003d\"empty\" time\u003d\"202308171754\"\u003e\u003centities\u003e\u003cdata-source id\u003d\"oracle_thin-189e9d7b125-5bbd18d48e76533d\"\u003e\u003centity id\u003d\"1\" name\u003d\"BOARD\" fq-name\u003d\"ADMINJOONGO.BOARD\" order\u003d\"0\" font\u003d\"Segoe UI:9:0\" x\u003d\"163\" y\u003d\"40\"\u003e\u003cpath name\u003d\"ADMINJOONGO\"/\u003e\u003c/entity\u003e\u003centity id\u003d\"2\" name\u003d\"BOARD_COMMENT\" fq-name\u003d\"ADMINJOONGO.BOARD_COMMENT\" order\u003d\"1\" font\u003d\"Segoe UI:9:0\" x\u003d\"72\" y\u003d\"336\"\u003e\u003cpath name\u003d\"ADMINJOONGO\"/\u003e\u003c/entity\u003e\u003centity id\u003d\"3\" name\u003d\"BOARD_IMG\" fq-name\u003d\"ADMINJOONGO.BOARD_IMG\" order\u003d\"2\" font\u003d\"Segoe UI:9:0\" x\u003d\"468\" y\u003d\"17\"\u003e\u003cpath name\u003d\"ADMINJOONGO\"/\u003e\u003c/entity\u003e\u003centity id\u003d\"4\" name\u003d\"LOGIN\" fq-name\u003d\"ADMINJOONGO.LOGIN\" order\u003d\"3\" border-width\u003d\"3\" font\u003d\"Segoe UI:9:0\" x\u003d\"411\" y\u003d\"185\"\u003e\u003cpath name\u003d\"ADMINJOONGO\"/\u003e\u003c/entity\u003e\u003centity id\u003d\"5\" name\u003d\"MANAGER\" fq-name\u003d\"ADMINJOONGO.MANAGER\" order\u003d\"4\" font\u003d\"Segoe UI:9:0\" x\u003d\"1109\" y\u003d\"657\"\u003e\u003cpath name\u003d\"ADMINJOONGO\"/\u003e\u003c/entity\u003e\u003centity id\u003d\"6\" name\u003d\"MEMBER\" fq-name\u003d\"ADMINJOONGO.\u0026quot;MEMBER\u0026quot;\" order\u003d\"5\" font\u003d\"Segoe UI:9:0\" x\u003d\"807\" y\u003d\"119\"\u003e\u003cpath name\u003d\"ADMINJOONGO\"/\u003e\u003c/entity\u003e\u003centity id\u003d\"7\" name\u003d\"NOTI_BOARD\" fq-name\u003d\"ADMINJOONGO.NOTI_BOARD\" order\u003d\"6\" font\u003d\"Segoe UI:9:0\" x\u003d\"898\" y\u003d\"437\"\u003e\u003cpath name\u003d\"ADMINJOONGO\"/\u003e\u003c/entity\u003e\u003centity id\u003d\"8\" name\u003d\"NOTI_IMG\" fq-name\u003d\"ADMINJOONGO.NOTI_IMG\" order\u003d\"7\" font\u003d\"Segoe UI:9:0\" x\u003d\"659\" y\u003d\"639\"\u003e\u003cpath name\u003d\"ADMINJOONGO\"/\u003e\u003c/entity\u003e\u003centity id\u003d\"9\" name\u003d\"PRODUCT\" fq-name\u003d\"ADMINJOONGO.PRODUCT\" order\u003d\"8\" font\u003d\"Segoe UI:9:0\" x\u003d\"276\" y\u003d\"454\"\u003e\u003cpath name\u003d\"ADMINJOONGO\"/\u003e\u003c/entity\u003e\u003centity id\u003d\"10\" name\u003d\"PRODUCT_CATEGORY\" fq-name\u003d\"ADMINJOONGO.PRODUCT_CATEGORY\" order\u003d\"9\" font\u003d\"Segoe UI:9:0\" x\u003d\"529\" y\u003d\"540\"\u003e\u003cpath name\u003d\"ADMINJOONGO\"/\u003e\u003c/entity\u003e\u003centity id\u003d\"11\" name\u003d\"PRODUCT_IMG\" fq-name\u003d\"ADMINJOONGO.PRODUCT_IMG\" order\u003d\"10\" font\u003d\"Segoe UI:9:0\" x\u003d\"43\" y\u003d\"513\"\u003e\u003cpath name\u003d\"ADMINJOONGO\"/\u003e\u003c/entity\u003e\u003centity id\u003d\"12\" name\u003d\"USER_WANT\" fq-name\u003d\"ADMINJOONGO.USER_WANT\" order\u003d\"11\" font\u003d\"Segoe UI:9:0\" x\u003d\"1070\" y\u003d\"228\"\u003e\u003cpath name\u003d\"ADMINJOONGO\"/\u003e\u003c/entity\u003e\u003centity id\u003d\"13\" name\u003d\"WANT\" fq-name\u003d\"ADMINJOONGO.WANT\" order\u003d\"12\" font\u003d\"Segoe UI:9:0\" x\u003d\"996\" y\u003d\"22\"\u003e\u003cpath name\u003d\"ADMINJOONGO\"/\u003e\u003c/entity\u003e\u003c/data-source\u003e\u003c/entities\u003e\u003crelations\u003e\u003crelation name\u003d\"FK_MANAGER_NOTI_BOARD\" fq-name\u003d\"ADMINJOONGO.NOTI_BOARD.FK_MANAGER_NOTI_BOARD\" type\u003d\"fk\" pk-ref\u003d\"5\" fk-ref\u003d\"7\"/\u003e\u003crelation name\u003d\"FK_MANAGER_NOTI_IMG\" fq-name\u003d\"ADMINJOONGO.NOTI_IMG.FK_MANAGER_NOTI_IMG\" type\u003d\"fk\" pk-ref\u003d\"5\" fk-ref\u003d\"8\"/\u003e\u003crelation name\u003d\"FK_MEMBER_BOARD\" fq-name\u003d\"ADMINJOONGO.BOARD.FK_MEMBER_BOARD\" type\u003d\"fk\" pk-ref\u003d\"6\" fk-ref\u003d\"1\"/\u003e\u003crelation name\u003d\"FK_MEMBER_BC\" fq-name\u003d\"ADMINJOONGO.BOARD_COMMENT.FK_MEMBER_BC\" type\u003d\"fk\" pk-ref\u003d\"6\" fk-ref\u003d\"2\"/\u003e\u003crelation name\u003d\"FK_MEMBER_BOARDIMG\" fq-name\u003d\"ADMINJOONGO.BOARD_IMG.FK_MEMBER_BOARDIMG\" type\u003d\"fk\" pk-ref\u003d\"6\" fk-ref\u003d\"3\"/\u003e\u003crelation name\u003d\"FK_MEMBER_LOGIN\" fq-name\u003d\"ADMINJOONGO.LOGIN.FK_MEMBER_LOGIN\" type\u003d\"fk\" pk-ref\u003d\"6\" fk-ref\u003d\"4\"/\u003e\u003crelation name\u003d\"FK_MEMBER_PRODUCT\" fq-name\u003d\"ADMINJOONGO.PRODUCT.FK_MEMBER_PRODUCT\" type\u003d\"fk\" pk-ref\u003d\"6\" fk-ref\u003d\"9\"/\u003e\u003crelation name\u003d\"FK_MEMBER_PRODUCT_IMG\" fq-name\u003d\"ADMINJOONGO.PRODUCT_IMG.FK_MEMBER_PRODUCT_IMG\" type\u003d\"fk\" pk-ref\u003d\"6\" fk-ref\u003d\"11\"/\u003e\u003crelation name\u003d\"FK_MEMBER\" fq-name\u003d\"ADMINJOONGO.USER_WANT.FK_MEMBER\" type\u003d\"fk\" pk-ref\u003d\"6\" fk-ref\u003d\"12\"/\u003e\u003crelation name\u003d\"SYS_C0011739\" fq-name\u003d\"ADMINJOONGO.NOTI_IMG.SYS_C0011739\" type\u003d\"fk\" pk-ref\u003d\"7\" fk-ref\u003d\"8\"/\u003e\u003crelation name\u003d\"FK_WANT\" fq-name\u003d\"ADMINJOONGO.USER_WANT.FK_WANT\" type\u003d\"fk\" pk-ref\u003d\"13\" fk-ref\u003d\"12\"/\u003e\u003c/relations\u003e\u003c/diagram\u003e"}}}}},
+	"connection-types": {
+		"dev": {
+			"name": "Development",
+			"color": "255,255,255",
+			"description": "Regular development database",
+			"auto-commit": true,
+			"confirm-execute": false,
+			"confirm-data-change": false,
+			"smart-commit": false,
+			"smart-commit-recover": true,
+			"auto-close-transactions": true,
+			"close-transactions-period": 1800
+		}
+	}
+}

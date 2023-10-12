@@ -1,0 +1,158 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="ProductMapper">
+
+<!--1.product 테이블에서 SQL작업(1.글목록보기)   -->  
+<select id="productList" parameterType="map"  resultType="ProductVO">
+SELECT P.*, I.P_IMGNAME
+FROM (
+    SELECT a.*, ROWNUM rnum
+    FROM (
+        SELECT * FROM PRODUCT
+            <where>
+                 <if test="keyWord!=null">
+                    P_TITLE like '%' || #{keyWord} || '%'
+                 </if>
+                <if test="category != null and category != ''">
+                    AND PRO_CATEGORY_ID = #{category}
+                </if>
+         </where>  
+        ORDER BY p_regdate desc
+    ) a
+) P
+LEFT JOIN (
+    SELECT PRO_NUM, P_IMGNAME
+    FROM (
+        SELECT IMG.PRO_NUM, IMG.P_IMGNAME, RANK() OVER (PARTITION BY IMG.PRO_NUM ORDER BY IMG.PRO_IMGID) AS R
+        FROM PRODUCT_IMG IMG
+    ) WHERE R = 1
+) I ON P.PRO_NUM = I.PRO_NUM
+<![CDATA[
+WHERE rnum >= #{start} AND rnum <= #{end}
+]]>
+
+</select>
+ 
+
+<!-- 2.검색어에 해당하는 총레코드수 구하기(java.lang.Integer->Integer->int) -->
+ <select id="countProduct" parameterType="map" resultType="Integer">
+    select count(*) from product
+    			 <where>
+     	         	<if test='keyWord!=null'>
+     	         	      P_TITLE like '%' || #{keyWord} || '%'
+     	         	</if>
+     	         </where>
+ </select>
+ 
+  <!-- 최대값 -->
+ <select id="getNewProductNumber" resultType="int">
+ 	select max(PRO_NUM) from product
+ </select>
+ 
+ 
+ <!--아이디에 맞게 갯수 구하기-->
+ <select id="countProductByUser_id" resultType ="int" parameterType="String">
+  select COUNT(*) from product where user_id = #{user_id}
+ </select>
+ 
+ <!---아이디에 맞게 올려진 물품 구하기-->
+ <select id="getProductByUser_id" resultType="ProductVO" parameterType="String">
+SELECT p.*, pi.p_imgname
+FROM product p
+JOIN (
+    SELECT pro_num, MAX(p_imgname) as p_imgname
+    FROM product_img
+    GROUP BY pro_num
+) pi ON p.pro_num = pi.pro_num
+WHERE p.user_id = #{user_id}
+ </select>
+ 
+ 
+ <!--글쓰기 -->
+ <insert id="writeProduct" parameterType="ProductVO">
+ 		insert into product(PRO_NUM,P_TITLE,P_PRICE,PRO_CATEGORY_ID,P_STATE,P_EXCHANGE,P_DFEE,P_CONTACT,P_CONTENT,USER_ID,ARCHIVE,P_REGDATE,P_COUNT)
+ 		values(#{pro_num},#{p_title},#{p_price},#{pro_category_id},#{p_state},#{p_exchange},#{p_dfee},#{p_contact},#{p_content},#{user_id},0,TO_DATE(TO_CHAR(sysdate, 'YYYY-MM-DD HH:MI:SS AM'), 'YYYY-MM-DD HH:MI:SS AM'),#{p_count})
+ </insert>
+   
+  <!-- 물품 가져오기 -->
+ <select id="getOneProduct" resultType="ProductVO">
+ 	SELECT P.*, PC.PRO_CATEGORY
+FROM PRODUCT P 
+JOIN PRODUCT_CATEGORY PC ON P.PRO_CATEGORY_ID = PC.PRO_CATEGORY_ID WHERE pro_num = #{pro_num} 
+ </select>
+ 
+ 
+ <!-- 조회수 증가 -->
+ <update id="updateCount" parameterType="int">
+ 	update product set P_COUNT = P_COUNT +1 where PRO_NUM =#{pro_num}
+ </update>
+
+ 
+ <!-- 글삭제하기 -->
+ <delete id="deleteOneProduct" parameterType="int">
+ 	delete from product where pro_num = #{pro_num}
+ </delete>
+ 
+<!-- 글 수정하기 --> 
+<update id ="updateOneProduct" parameterType="ProductVO">
+	update product set P_TITLE = #{p_title},PRO_CATEGORY_ID = #{pro_category_id},P_STATE = #{p_state}, P_EXCHANGE = #{p_exchange}, P_PRICE = #{p_price}, P_DFEE = #{p_dfee}, P_CONTENT = #{p_content}, P_CONTACT = #{p_contact} where PRO_NUM = #{pro_num}
+</update>
+
+<!-- 카테고리 선택한 값 불러오기 -->
+  <select id="productCategoryList" resultType="ProductCategoryVO">
+ 	select * from product_category
+ </select>
+
+<!-- 이미지파일 관련 추가 -->
+<!-- 이미지 올리기 -->
+<insert id="uploadProductImage" parameterType="ProductImageVO">
+	insert into product_img (PRO_IMGID ,PRO_NUM, PRO_CATEGORY_ID, USER_ID, P_IMGNAME, P_ORIGINALFILENAME)
+	values(#{pro_imgid},#{pro_num},#{pro_category_id},#{user_id},#{p_imgname},#{p_originalfilename})
+</insert>
+
+<!--이미지 테이블 가장 마지막 번호 가져오기-->
+<select id="getMaxProductImageId" resultType="int">
+ 	select max(PRO_IMGID) from product_img
+</select>
+
+<!--게시판 번호에 맞게 이미지 가져오기-->
+<select id= "getProductImage" resultType="ProductImageVO" parameterType="int">
+	select * from product_img where PRO_NUM = #{pro_num}
+</select>
+   
+<!--게시판 수정시 갯수에 맞게 이미지 삭제--> 
+<delete id="delPro_img" parameterType="String">
+	delete from product_img where P_IMGNAME = #{p_imgname}
+</delete>
+
+<!--게시판 에있는 모든 사진 삭제 --> 
+<delete id="delAllPro_img" parameterType="int">
+	delete from product_img where pro_num = #{pro_num}
+</delete>
+ 
+<!-- 이미지파일 관련 추가 끝 --> 
+
+<!-- 최신등록일 순서대로 6개 레코드 출력 -->
+    <select id="getProductsByRegDate" resultType="ProductVO">
+SELECT P.*, I.P_IMGNAME
+FROM (
+    SELECT a.*, ROWNUM rnum
+    FROM (
+        SELECT * FROM PRODUCT 
+        ORDER BY p_regdate desc
+    ) a
+) P
+LEFT JOIN (
+    SELECT PRO_NUM, P_IMGNAME
+    FROM (
+        SELECT IMG.PRO_NUM, IMG.P_IMGNAME, RANK() OVER (PARTITION BY IMG.PRO_NUM ORDER BY IMG.PRO_IMGID) AS R
+        FROM PRODUCT_IMG IMG
+    ) WHERE R = 1
+) I ON P.PRO_NUM = I.PRO_NUM
+		WHERE 6 >= ROWNUM
+        ORDER BY P_REGDATE DESC 
+    </select>
+</mapper>

@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="k_BoardMapper">
+
+
+ <!--1.Board 테이블에서 SQL작업(1.글목록보기)   -->  
+<select id="listAll" parameterType="map"  resultType="K_BoardVO">
+    select *
+     	 from (select a.*,rownum rnum
+     	   from (select * from Board 
+     	   	         <where>
+     	         	<if test='keyWord!=null'>
+     	         	      B_NAME like '%' || #{keyWord} || '%'
+     	         	</if>
+     	         </where>
+     	   order by Board_id desc) a) 
+   <![CDATA[
+    where rnum >=#{start} AND rnum <=#{end}
+     ]]>
+</select>
+ 
+ 
+  <!-- 2.검색어에 해당하는 총 레코드 수 구하기(java.lang.Integer->Integer->int) -->
+ <select id="countBoard" parameterType="map" resultType="Integer">
+    select count(*) from board
+    			 <where>
+     	         	<if test='keyWord!=null'>
+     	         	      B_NAME like '%' || #{keyWord} || '%'
+     	         	</if>
+     	         </where>
+ </select>
+ 
+ <!--아이디에 맞게 글갯수  구하기-->
+ <select id="countBoardByUser_id" parameterType="String" resultType="int">
+ 	select count(*) from board where user_id = #{user_id}
+ </select>
+ 
+ <!--아이디에 맞게 글가져오기-->
+ <select id="getBoardByUser_id" parameterType="String" resultType="K_BoardVO">
+ 	select * from board where user_id = #{user_id}
+ </select>
+ 
+  <!-- 최대값 -->
+ <select id="getNewBoardId" resultType="int">
+ 	select max(BOARD_ID) from board
+ </select>
+ 
+ 
+ <!-- 글쓰기 -->
+ <insert id="writeBoard" parameterType="K_BoardVO">
+ 	insert into board(BOARD_ID,USER_ID,B_REGDATE,B_NAME,B_CONTENT,COUNT,ARCHIVE)
+ 	values(#{board_id},#{user_id},sysdate,#{b_name},#{b_content},0,0)
+ </insert>
+   
+   
+  <!-- 게시글 가져오기 -->
+ <select id="getOneBoard" resultType="K_BoardVO">
+ 	select * from BOARD WHERE BOARD_ID = #{board_id}
+ </select>
+ 
+ 
+ <!-- 조회수 증가 -->
+ <update id="updateCount" parameterType="int">
+ 	update board set COUNT = COUNT +1 where BOARD_ID =#{board_id}
+ </update>
+ 
+ 
+ <!-- 글 삭제하기 -->
+ <delete id="deleteOneBoard" parameterType="int">
+ 	delete from BOARD where BOARD_ID = #{board_id}
+ </delete>
+ 
+ 
+<!-- 글 수정하기 --> 
+<update id ="updateOneBoard" parameterType="K_BoardVO">
+	update board set B_NAME = #{b_name},B_CONTENT = #{b_content} where BOARD_ID = #{board_id}
+</update>
+
+
+<!--이미지 올리기-->
+<insert id="uploadImage" parameterType="K_ImageFileVO">
+	insert into board_img (BOARD_FILE_ID , BOARD_ID, USER_ID, BOARD_FILENAME, BOARD_ORIGINAFILE) values(#{board_file_id},#{board_id},#{user_id},#{board_filename},#{board_originafile})
+</insert>
+
+
+<!--이미지 테이블 가장 마지막 번호 가져오기-->
+<select id="getMaxImageId" resultType="int">
+ 	select max(BOARD_FILE_ID) from board_img
+</select>
+
+
+<!--게시판 번호에 맞게 이미지 가져오기-->
+<select id= "getBoard_img" resultType="K_ImageFileVO" parameterType="int"   >
+	select * from board_img where BOARD_ID = #{board_id}
+</select>
+   
+   
+<!--게시판 수정시 갯수에 맞게 이미지 삭제--> 
+<delete id="delBoard_img" parameterType="String">
+	delete  from board_img where BOARD_FILENAME = #{b_filename}
+</delete>
+
+<delete id="dellAllboard_img" parameterType="int">
+	delete from board_img where BOARD_ID = #{board_id}
+</delete>
+  
+<!-- 댓글 작성하기 -->
+	<insert id="writeComment" parameterType="K_CommentVO">
+		insert into BOARD_COMMENT(CMNT_ID, BOARD_ID, USER_ID, C_REGDATE, C_CONTENTS)
+		values(#{cmnt_id},#{board_id},#{user_id},sysdate,#{c_contents})
+	</insert>
+<!-- 댓글 마지막 번호 가져오기 -->
+	<select id="getMaxCommentId" resultType="int">
+		select MAX(CMNT_ID) FROM BOARD_COMMENT
+	</select>
+<!--게시판에 맞게 댓글 가져오기-->
+<select id="getCommentByBoard" parameterType="int" resultType="K_CommentVO">
+    SELECT 
+        BC.CMNT_ID,
+        BC.BOARD_ID,
+        BC.USER_ID,
+        BC.C_REGDATE,
+        BC.C_CONTENTS,
+        M.U_PICTURE
+    FROM 
+        BOARD_COMMENT BC
+    JOIN 
+        MEMBER M ON BC.USER_ID = M.USER_ID
+    WHERE 
+        BC.BOARD_ID = #{board_id}
+    ORDER BY
+        BC.C_REGDATE ASC
+</select>
+
+<!-- 댓글 삭제하기 -->
+	<delete id="deleteOneComment" parameterType="int">
+		delete from BOARD_COMMENT where CMNT_ID = #{cmnt_id}
+	</delete>
+	
+<!-- 댓글 수정하기 -->
+<update id="updateOneComment" parameterType="K_CommentVO">
+	update BOARD_COMMENT set C_CONTENTS = #{c_contents} where CMNT_ID = #{cmnt_id} 
+</update>
+    
+   
+   
+</mapper>

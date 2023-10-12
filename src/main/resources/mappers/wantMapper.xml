@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="wantMapper">
+    
+    
+	    <select id="listAll" parameterType="map" resultType="WantVO">
+	        SELECT *
+			FROM (
+			    SELECT W.WANT_ID, W.W_URL, W.W_IMG,
+			           ROW_NUMBER() OVER (ORDER BY W.WANT_ID DESC) AS rnum
+			    FROM USER_WANT U
+			    JOIN WANT W ON U.WANT_ID = W.WANT_ID
+			    WHERE U.user_id = #{user_id}
+			)
+			WHERE rnum BETWEEN #{start} AND #{end}
+	    </select>
+	
+	<!-- 2.검색어에 해당하는 총레코드수 구하기(java.lang.Integer->Integer->int) -->
+	 <select id="countWant" parameterType="map" resultType="int">
+	    SELECT COUNT(*) AS WANT_ID
+	    FROM user_want
+	    WHERE user_id = #{user_id}
+	 </select>
+	 
+	 <select id="countNumWant" parameterType="String" resultType="int">
+	 	SELECT COUNT(*)  FROM USER_WANT WHERE user_id = #{user_id}
+	 </select>
+	 
+	 <select id="maxUser_want" resultType="int">
+	 	SELECT MAX(USER_WANT_ID) from user_want 
+	 </select>
+	 
+	 <select id="countPublicWant" resultType="int">
+	 	SELECT MAX(WANT_ID)  FROM want
+	 </select>
+	
+    <insert id="regist">
+        insert into want (WANT_ID, W_URL, W_IMG)
+        values(#{want_id}, #{w_url}, #{w_img})
+     
+    </insert>
+    
+    <insert id="regist_user_want" parameterType="WantVO">
+    	insert into user_want (user_want_id,user_id,want_id) values (#{user_want_id},#{user_id},#{want_id})
+    </insert>
+	
+	<delete id="removeFromWishListUser_want"  parameterType="int">
+	   DELETE FROM USER_WANT WHERE WANT_ID = #{want_id}
+	</delete>
+	
+    <delete id="removeFromWishlist" parameterType="int">
+       DELETE FROM want WHERE WANT_ID = #{want_id}
+	</delete>
+
+	<delete id="deleteAll" parameterType="String">
+    	 DELETE FROM want WHERE want_id IN (
+        SELECT want_id FROM user_want WHERE user_id = #{user_id})
+	</delete>
+	
+	<!---->
+	
+    <!-- <delete id="deleteAll">
+        delete * from WANT where USER_ID = #{USER_ID}
+    </delete> -->
+	
+
+</mapper>

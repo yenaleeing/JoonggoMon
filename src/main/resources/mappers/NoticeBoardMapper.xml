@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="noticeBoardMapper">
+
+
+ <!--1.Noti_board 테이블에서 SQL작업(1.글목록보기)   -->  
+<select id="noticeList" parameterType="map"  resultType="NoticeBoardVO">
+    select *
+     	 from (select a.*,rownum rnum
+     	   from (select * from noti_board 
+     	   	         <where>
+     	         	<if test='keyWord!=null'>
+     	         	      N_TITLE like '%' || #{keyWord} || '%'
+     	         	</if>
+     	         </where>
+     	   order by n_important asc , noti_board_id desc) a) 
+   <![CDATA[
+    where rnum >=#{start} AND rnum <=#{end}
+     ]]>
+</select>
+ 
+ 
+  <!-- 2.검색어에 해당하는 총레코드수 구하기(java.lang.Integer->Integer->int) -->
+ <select id="countNotiBoard" parameterType="map" resultType="Integer">
+    select count(*) from noti_board
+    			 <where>
+     	         	<if test='keyWord!=null'>
+     	         	      N_TITLE like '%' || #{keyWord} || '%'
+     	         	</if>
+     	         </where>
+ </select>
+ 
+  <!-- 최대값 -->
+ <select id="getNewNoticeBoardId" resultType="int">
+ 	select max(NOTI_BOARD_ID) from noti_board
+ </select>
+ 
+ <!--글쓰기 -->
+ <insert id="writeNotiboard" parameterType="NoticeBoardVO">
+ 		insert into noti_board(NOTI_BOARD_ID,MANAGER_ID,N_REGDATE,N_TITLE,ARCHIVE,N_COUNT,N_IMPORTANT,N_CONTENTS)
+ 	values(#{noti_board_id},#{manager_id},sysdate,#{n_title},1,0,#{n_important},#{n_contents})
+ </insert>
+   
+  <!-- 게시글 가져오기 -->
+ <select id="getOneNotiBoard" resultType="NoticeBoardVO">
+ 	select * from NOTI_BOARD WHERE NOTI_BOARD_ID = #{noti_board_id}
+ </select>
+ 
+ 
+ <!-- 조회수 증가 -->
+ <update id="updateCount" parameterType="int">
+ 	update noti_board set N_COUNT = N_COUNT +1 where NOTI_BOARD_ID =#{noti_board_id}
+ </update>
+ 
+ <!-- 글삭제하기 -->
+ <delete id="deleteOneNotiBoard" parameterType="int">
+ 	delete from NOTI_BOARD where NOTI_BOARD_ID = #{noti_board_id}
+ </delete>
+ 
+<!-- 글 수정하기 --> 
+<update id ="updateOneNotiBoard" parameterType="NoticeBoardVO">
+	update noti_board set N_TITLE = #{n_title},N_CONTENTS = #{n_contents},N_IMPORTANT=#{n_important} where NOTI_BOARD_ID = #{noti_board_id}
+</update>
+  
+<!--이미지 올리기-->
+<insert id="uploadImage" parameterType="NoticeImageFileVO">
+	insert into noti_img (NOTI_FILE_ID , NOTI_BOARD_ID, MANAGER_ID, N_IMGNAME,N_ORIGINAFILE) values(#{noti_file_id},#{noti_board_id},#{manager_id},#{n_imgname},#{n_originafile})
+</insert>
+
+<!--이미지 테이블 가장 마지막 번호 가져오기-->
+<select id="getMaxImageId" resultType="int">
+ 	select max(NOTI_FILE_ID) from noti_img
+</select>
+
+
+<!--게시판 번호에 맞게 이미지 가져오기-->
+<select id= "getNoti_img" resultType="NoticeImageFileVO" parameterType="int"   >
+	select * from noti_img where NOTI_BOARD_ID = #{noti_board_id}
+</select>
+   
+  <!--게시판 수정시 갯수에 맞게 이미지 삭제--> 
+   <delete id="delNoti_img" parameterType="String">
+   	delete  from noti_img where N_IMGNAME = #{n_imgname}
+   </delete>
+   
+   <delete id="delAllNoti_img" parameterType="int">
+   	delete from noti_img where noti_board_id = #{noti_board_id}
+   </delete>
+   
+</mapper>
