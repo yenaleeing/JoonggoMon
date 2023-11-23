@@ -1,12 +1,23 @@
-<img width="636" alt="image" src="https://github.com/yenaleeing/JoonggoMon/assets/136471021/88156aa7-a856-4602-81db-556715daf06e"># 중고물품 거래 플랫폼 <중고몬>
-
-
-
-### 프로젝트 소개
+# 중고물품 거래 플랫폼 <중고몬>
 중고나라, 번개장터, 당근 등 기존 중고 판매 사이트의 물건들을 모두 통합해 한번에 볼 수 있는
 
 
 중고물품 거래 플랫폼
+
+
+
+![image](https://github.com/yenaleeing/JoonggoMon/assets/136471021/8bba78ba-6cde-4221-93d3-eb00f5d75b50)
+
+
+
+
+
+### 프로젝트 소개
+고물가 시대가 도래하면서 새상품을 구매하기보다는 저렴한 가격의 중고 상품 구매를 통해 합리적인 소비를 하려는 사람들이 많아지고, 이에 따른 중고 거래 사이트의 수요가 높아졌습니다.
+
+
+기존의 중고 거래 사이트는 여러 사이트에 접속해 매물을 각각 검색해야 하는 불편함이 있어, 이를 개선하는 중고 거래 통합 사이트를 기획, 제작하였습니다.
+
 
 
 
@@ -28,7 +39,11 @@ DB : Oracle 11g
 프레임워크 : Spring
 
 
-<img width="636" alt="image" src="https://github.com/yenaleeing/JoonggoMon/assets/136471021/0e1a59f0-f7ef-4bf2-b7c6-48e8ba87ef22">
+
+### 개발 기간
+2023.06 ~ 2023.08
+
+
 
 
 
